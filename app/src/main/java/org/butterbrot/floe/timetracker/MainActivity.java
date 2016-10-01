@@ -9,10 +9,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.app.NotificationCompat;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,22 +20,25 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.appindexing.Thing;
-import com.google.android.gms.common.api.GoogleApiClient;
-
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
-    ArrayList<String> values;
+    String[] init_values = { "foo", "bar", "baz", "qux" };
+    ArrayList<String> values = new ArrayList<String>(Arrays.asList(init_values));
     ArrayAdapter<String> aas;
 
     boolean is_tracking = false;
     int notificationId = 001;
 
     NotificationCompat.Builder notificationBuilder;
+    NotificationManagerCompat notificationManager;
+
+    PendingIntent startIntent;
+    PendingIntent stopIntent;
+
+    BroadcastReceiver receiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +48,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         // TODO: use local database, sync with log server
-        values =  new ArrayList<String>();
-        aas = new ArrayAdapter<String>(this, R.layout.textview, values);
+        aas = new ArrayAdapter<String>(this, R.layout.itemview, R.id.content, values);
 
         // set content adapter for listview
         ListView lv = (ListView) findViewById(R.id.mainlist);
@@ -71,13 +73,18 @@ public class MainActivity extends AppCompatActivity {
         broadcast_setup();
     }
 
+    @Override
+    protected void onDestroy() {
+        unregisterReceiver(receiver);
+    }
+
     public void broadcast_setup() {
         // listen for broadcast intents
         IntentFilter filter = new IntentFilter();
         filter.addAction("start");
         filter.addAction("stop");
 
-        BroadcastReceiver receiver = new BroadcastReceiver() {
+        receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (intent.getAction().equals("start")) start_tracking();
@@ -90,26 +97,27 @@ public class MainActivity extends AppCompatActivity {
 
     public void notification_setup() {
         // create notification
-        Intent viewIntent = new Intent(this, MainActivity.class);
-        PendingIntent viewPendingIntent = PendingIntent.getActivity(this, 0, viewIntent, 0);
 
-        Intent startIntent = new Intent("start");
-        PendingIntent startPendingIntent = PendingIntent.getBroadcast(this, 0, startIntent, 0);
+        startIntent = PendingIntent.getBroadcast(this, 0, new Intent("start"), 0);
+        stopIntent  = PendingIntent.getBroadcast(this, 0, new Intent("stop"),  0);
 
-        Intent stopIntent = new Intent("stop");
-        PendingIntent stopPendingIntent = PendingIntent.getBroadcast(this, 0, stopIntent, 0);
-
-        notificationBuilder = new NotificationCompat.Builder(this)
-            .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
-            .setContentTitle("foobar")
+        notificationBuilder = new NotificationCompat.Builder(this);
+        notificationBuilder.setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
+            .setContentTitle("TimeTracker")
             .setContentText("foobaz")
             .setOngoing(true)
-            .setContentIntent(viewPendingIntent)
-            .addAction(android.R.drawable.ic_media_play,"Start",startPendingIntent)
-            .addAction(android.R.drawable.ic_media_pause,"Stop",stopPendingIntent);
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            .setContentIntent(PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0))
+            .addAction(android.R.drawable.ic_media_play,"Start",startIntent)
+                .addAction(android.R.drawable.ic_media_play,"S2",startIntent)
+                .addAction(android.R.drawable.ic_media_play,"S3",startIntent)
+                .addAction(android.R.drawable.ic_media_play,"S4",startIntent)
+                .addAction(android.R.drawable.ic_media_play,"S5",startIntent)
+            .setStyle(new NotificationCompat.MediaStyle().setShowActionsInCompactView(new int[]{1,2,3}))
+        ;
 
         // Get an instance of the NotificationManager service
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        notificationManager = NotificationManagerCompat.from(this);
         notificationManager.notify(notificationId, notificationBuilder.build());
     }
 
@@ -141,6 +149,9 @@ public class MainActivity extends AppCompatActivity {
         is_tracking = true;
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setImageResource(android.R.drawable.ic_media_pause);
+        notificationBuilder.mActions.clear();
+        notificationBuilder.addAction(android.R.drawable.ic_media_pause,"Stop",stopIntent);
+        notificationManager.notify(notificationId,notificationBuilder.build());
     }
 
     public void stop_tracking() {
@@ -148,5 +159,8 @@ public class MainActivity extends AppCompatActivity {
         is_tracking = false;
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setImageResource(android.R.drawable.ic_media_play);
+        notificationBuilder.mActions.clear();
+        notificationBuilder.addAction(android.R.drawable.ic_media_play,"Start",startIntent);
+        notificationManager.notify(notificationId,notificationBuilder.build());
     }
 }
