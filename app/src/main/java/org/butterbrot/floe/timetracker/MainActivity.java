@@ -13,32 +13,40 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.app.NotificationCompat;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
-    String[] init_values = { "foo", "bar", "baz", "qux", "qoo" };
+    String[] init_values = { "Pause", "Work", "Travel", "Fun", "Other" };
+    Long[] times = { 0l, 0l, 0l, 0l, 0l };
     Integer[] imgid = {
         android.R.drawable.ic_media_pause,
         android.R.drawable.btn_star_big_off,
         android.R.drawable.ic_media_play,
-        android.R.drawable.ic_media_previous,
+        android.R.drawable.btn_star_big_on,
         android.R.drawable.ic_btn_speak_now
     };
 
     //ArrayList<String> values = new ArrayList<String>(Arrays.asList(init_values));
     ItemViewAdapter iva;
 
-    boolean is_tracking = false;
-    int notificationId = 001;
+    //boolean is_tracking = false;
+    int current_category = 0;
+    Calendar start_time = Calendar.getInstance();
+    int notificationId = 0xF10E;
 
     NotificationCompat.Builder notificationBuilder;
     NotificationManagerCompat notificationManager;
@@ -68,11 +76,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();*/
-                if (is_tracking) {
-                    stop_tracking();
-                } else {
-                    start_tracking();
-                }
+                Log.d("TimeTracker","FAB click");
+                start_tracking(0);
             }
         });
 
@@ -84,19 +89,21 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         unregisterReceiver(receiver);
+        super.onDestroy();
     }
 
     public void broadcast_setup() {
         // listen for broadcast intents
         IntentFilter filter = new IntentFilter();
-        filter.addAction("start");
-        filter.addAction("stop");
+        for (String value: init_values) filter.addAction(value);
 
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals("start")) start_tracking();
-                if (intent.getAction().equals("stop"))  stop_tracking();
+                Log.d("TimeTracker","got broadcast: "+intent.getAction());
+                for (int i = 0; i < init_values.length; i++) {
+                    if (intent.getAction().equals(init_values[i])) start_tracking(i);
+                }
             }
         };
 
@@ -112,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
         notificationBuilder = new NotificationCompat.Builder(this);
         notificationBuilder.setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
             .setContentTitle("TimeTracker")
-            .setContentText("foobaz")
+            .setContentText("Current: Pause")
             .setOngoing(true)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setContentIntent(PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0))
@@ -120,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
 
         for (int i = 0; i < init_values.length; i++) {
             PendingIntent current = PendingIntent.getBroadcast(this, 0, new Intent(init_values[i]), 0);
+            Log.d("TimeTracker","creating action "+init_values[i]);
             notificationBuilder.addAction(imgid[i], init_values[i], current);
         }
 
@@ -150,8 +158,20 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void start_tracking(int category) {
+        Toast.makeText(this,init_values[category],Toast.LENGTH_SHORT).show();
+        if (current_category == category) return;
+        Calendar now = Calendar.getInstance();
+        long difference = now.getTimeInMillis() - start_time.getTimeInMillis();
+        times[category] += difference;
+        start_time = now;
+        current_category = category;
+        SimpleDateFormat df = new SimpleDateFormat("HH:mm");
+        notificationBuilder.setContentText("Current: "+init_values[category]+" (since "+df.format(now.getTime())+")");
+        notificationManager.notify(notificationId,notificationBuilder.build());
+    }
 
-    public void start_tracking() {
+    /*public void start_tracking() {
         //aas.add("start");
         is_tracking = true;
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -169,5 +189,5 @@ public class MainActivity extends AppCompatActivity {
         //notificationBuilder.mActions.clear();
         //notificationBuilder.addAction(android.R.drawable.ic_media_play,"Start",startIntent);
         notificationManager.notify(notificationId,notificationBuilder.build());
-    }
+    }*/
 }
