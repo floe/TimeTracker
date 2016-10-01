@@ -25,9 +25,17 @@ import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
-    String[] init_values = { "foo", "bar", "baz", "qux" };
+    String[] init_values = { "foo", "bar", "baz", "qux", "qoo" };
+    Integer[] imgid = {
+        android.R.drawable.btn_star_big_off,
+        android.R.drawable.btn_star_big_off,
+            android.R.drawable.btn_star_big_off,
+            android.R.drawable.btn_star_big_off,
+            android.R.drawable.btn_star_big_off
+    };
+
     ArrayList<String> values = new ArrayList<String>(Arrays.asList(init_values));
-    ArrayAdapter<String> aas;
+    ItemViewAdapter iva;
 
     boolean is_tracking = false;
     int notificationId = 001;
@@ -48,11 +56,11 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         // TODO: use local database, sync with log server
-        aas = new ArrayAdapter<String>(this, R.layout.itemview, R.id.content, values);
+        iva = new ItemViewAdapter(this, init_values, imgid);
 
         // set content adapter for listview
         ListView lv = (ListView) findViewById(R.id.mainlist);
-        lv.setAdapter(aas);
+        lv.setAdapter(iva);
 
         // set actions for start/stop button
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -145,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void start_tracking() {
-        aas.add("start");
+        //aas.add("start");
         is_tracking = true;
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setImageResource(android.R.drawable.ic_media_pause);
@@ -155,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void stop_tracking() {
-        aas.add("stop");
+        //aas.add("stop");
         is_tracking = false;
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setImageResource(android.R.drawable.ic_media_play);
