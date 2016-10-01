@@ -27,14 +27,14 @@ public class MainActivity extends AppCompatActivity {
 
     String[] init_values = { "foo", "bar", "baz", "qux", "qoo" };
     Integer[] imgid = {
+        android.R.drawable.ic_media_pause,
         android.R.drawable.btn_star_big_off,
-        android.R.drawable.btn_star_big_off,
-            android.R.drawable.btn_star_big_off,
-            android.R.drawable.btn_star_big_off,
-            android.R.drawable.btn_star_big_off
+        android.R.drawable.ic_media_play,
+        android.R.drawable.ic_media_previous,
+        android.R.drawable.ic_btn_speak_now
     };
 
-    ArrayList<String> values = new ArrayList<String>(Arrays.asList(init_values));
+    //ArrayList<String> values = new ArrayList<String>(Arrays.asList(init_values));
     ItemViewAdapter iva;
 
     boolean is_tracking = false;
@@ -106,8 +106,8 @@ public class MainActivity extends AppCompatActivity {
     public void notification_setup() {
         // create notification
 
-        startIntent = PendingIntent.getBroadcast(this, 0, new Intent("start"), 0);
-        stopIntent  = PendingIntent.getBroadcast(this, 0, new Intent("stop"),  0);
+        //startIntent = PendingIntent.getBroadcast(this, 0, new Intent("start"), 0);
+        //stopIntent  = PendingIntent.getBroadcast(this, 0, new Intent("stop"),  0);
 
         notificationBuilder = new NotificationCompat.Builder(this);
         notificationBuilder.setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
@@ -116,13 +116,12 @@ public class MainActivity extends AppCompatActivity {
             .setOngoing(true)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setContentIntent(PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0))
-            .addAction(android.R.drawable.ic_media_play,"Start",startIntent)
-                .addAction(android.R.drawable.ic_media_play,"S2",startIntent)
-                .addAction(android.R.drawable.ic_media_play,"S3",startIntent)
-                .addAction(android.R.drawable.ic_media_play,"S4",startIntent)
-                .addAction(android.R.drawable.ic_media_play,"S5",startIntent)
-            .setStyle(new NotificationCompat.MediaStyle().setShowActionsInCompactView(new int[]{1,2,3}))
-        ;
+            .setStyle(new NotificationCompat.MediaStyle().setShowActionsInCompactView(new int[]{0,1,2,3}));
+
+        for (int i = 0; i < init_values.length; i++) {
+            PendingIntent current = PendingIntent.getBroadcast(this, 0, new Intent(init_values[i]), 0);
+            notificationBuilder.addAction(imgid[i], init_values[i], current);
+        }
 
         // Get an instance of the NotificationManager service
         notificationManager = NotificationManagerCompat.from(this);
@@ -157,8 +156,8 @@ public class MainActivity extends AppCompatActivity {
         is_tracking = true;
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setImageResource(android.R.drawable.ic_media_pause);
-        notificationBuilder.mActions.clear();
-        notificationBuilder.addAction(android.R.drawable.ic_media_pause,"Stop",stopIntent);
+        //notificationBuilder.mActions.clear();
+        //notificationBuilder.addAction(android.R.drawable.ic_media_pause,"Stop",stopIntent);
         notificationManager.notify(notificationId,notificationBuilder.build());
     }
 
@@ -167,8 +166,8 @@ public class MainActivity extends AppCompatActivity {
         is_tracking = false;
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setImageResource(android.R.drawable.ic_media_play);
-        notificationBuilder.mActions.clear();
-        notificationBuilder.addAction(android.R.drawable.ic_media_play,"Start",startIntent);
+        //notificationBuilder.mActions.clear();
+        //notificationBuilder.addAction(android.R.drawable.ic_media_play,"Start",startIntent);
         notificationManager.notify(notificationId,notificationBuilder.build());
     }
 }
