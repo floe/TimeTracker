@@ -15,13 +15,15 @@ public class ItemViewAdapter extends ArrayAdapter<String> {
     private final Activity context;
     private final String[] itemname;
     private final Integer[] imgid;
+    private final Long[] values;
 
-    public ItemViewAdapter(Activity context, String[] itemname, Integer[] imgid) {
+    public ItemViewAdapter(Activity context, String[] itemname, Integer[] imgid, Long[] values) {
         super(context, R.layout.itemview, itemname);
 
         this.context = context;
         this.itemname = itemname;
         this.imgid = imgid;
+        this.values = values;
     }
 
     public View getView(int position, View view, ViewGroup parent) {
@@ -32,7 +34,7 @@ public class ItemViewAdapter extends ArrayAdapter<String> {
         ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
         //TextView extratxt = (TextView) rowView.findViewById(R.id.textView1);
 
-        txtTitle.setText(itemname[position]);
+        txtTitle.setText(itemname[position]+" "+values[position].toString());
         imageView.setImageResource(imgid[position]);
         //extratxt.setText("Description "+itemname[position]);
 

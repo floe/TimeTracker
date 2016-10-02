@@ -31,6 +31,7 @@ import java.util.Date;
 public class MainActivity extends AppCompatActivity {
 
     // FIXME: nasty hack to keep a reference to the activity for the receiver
+    // (from http://stackoverflow.com/questions/21508858/android-calling-function-from-broadcastreceiver-unable-to-start-receiver-j)
     // FIXME: this should be solved by using a separate service
     public static MainActivity instance = null;
 
@@ -64,22 +65,22 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         // TODO: use local database, sync with log server
-        iva = new ItemViewAdapter(this, init_values, imgid);
+        iva = new ItemViewAdapter(this, init_values, imgid, times);
 
         // set content adapter for listview
         ListView lv = (ListView) findViewById(R.id.mainlist);
         lv.setAdapter(iva);
 
         // set actions for start/stop button
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();*/
+                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                 Log.d("TimeTracker","FAB click");
                 start_tracking(0);
             }
-        });
+        });*/
 
         notification_setup();
     }
@@ -92,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
             .setContentTitle("TimeTracker")
             .setContentText("Current: Pause")
             // FIXME: ongoing notifications are not shown on wearable
+            // FIXME: either create full wear app or re-create notification on dismissal
             //.setOngoing(true)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setContentIntent(PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0))
@@ -136,12 +138,13 @@ public class MainActivity extends AppCompatActivity {
         if (current_category == category) return;
         Calendar now = Calendar.getInstance();
         long difference = now.getTimeInMillis() - start_time.getTimeInMillis();
-        times[category] += difference;
+        times[current_category] += Math.round(difference/1000.0);
         start_time = now;
         current_category = category;
         SimpleDateFormat df = new SimpleDateFormat("HH:mm");
         notificationBuilder.setContentText("Current: "+init_values[category]+" (since "+df.format(now.getTime())+")");
         notificationManager.notify(notificationId,notificationBuilder.build());
+        iva.notifyDataSetChanged();
     }
 
 }
