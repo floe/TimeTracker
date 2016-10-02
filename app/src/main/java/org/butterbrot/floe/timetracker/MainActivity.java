@@ -44,21 +44,14 @@ public class MainActivity extends AppCompatActivity {
         android.R.drawable.ic_btn_speak_now
     };
 
-    //ArrayList<String> values = new ArrayList<String>(Arrays.asList(init_values));
     ItemViewAdapter iva;
 
-    //boolean is_tracking = false;
     int current_category = 0;
     Calendar start_time = Calendar.getInstance();
     int notificationId = 0xF10E;
 
     NotificationCompat.Builder notificationBuilder;
     NotificationManagerCompat notificationManager;
-
-    PendingIntent startIntent;
-    PendingIntent stopIntent;
-
-    BroadcastReceiver receiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,39 +82,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         notification_setup();
-
-        //broadcast_setup();
     }
-
-    /*@Override
-    protected void onDestroy() {
-        unregisterReceiver(receiver);
-        super.onDestroy();
-    }
-
-    public void broadcast_setup() {
-        // listen for broadcast intents
-        IntentFilter filter = new IntentFilter();
-        for (String value: init_values) filter.addAction(value);
-
-        receiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Log.d("TimeTracker","got broadcast: "+intent.getAction());
-                for (int i = 0; i < init_values.length; i++) {
-                    if (intent.getAction().equals(init_values[i])) start_tracking(i);
-                }
-            }
-        };
-
-        registerReceiver(receiver,filter);
-    }*/
 
     public void notification_setup() {
         // create notification
-
-        //startIntent = PendingIntent.getBroadcast(this, 0, new Intent("start"), 0);
-        //stopIntent  = PendingIntent.getBroadcast(this, 0, new Intent("stop"),  0);
 
         notificationBuilder = new NotificationCompat.Builder(this);
         notificationBuilder.setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
@@ -180,23 +144,4 @@ public class MainActivity extends AppCompatActivity {
         notificationManager.notify(notificationId,notificationBuilder.build());
     }
 
-    /*public void start_tracking() {
-        //aas.add("start");
-        is_tracking = true;
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setImageResource(android.R.drawable.ic_media_pause);
-        //notificationBuilder.mActions.clear();
-        //notificationBuilder.addAction(android.R.drawable.ic_media_pause,"Stop",stopIntent);
-        notificationManager.notify(notificationId,notificationBuilder.build());
-    }
-
-    public void stop_tracking() {
-        //aas.add("stop");
-        is_tracking = false;
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setImageResource(android.R.drawable.ic_media_play);
-        //notificationBuilder.mActions.clear();
-        //notificationBuilder.addAction(android.R.drawable.ic_media_play,"Start",startIntent);
-        notificationManager.notify(notificationId,notificationBuilder.build());
-    }*/
 }
