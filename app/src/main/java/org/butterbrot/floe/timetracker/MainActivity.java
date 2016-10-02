@@ -30,6 +30,10 @@ import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
+    // FIXME: nasty hack to keep a reference to the activity for the receiver
+    // FIXME: this should be solved by using a separate service
+    public static MainActivity instance = null;
+
     String[] init_values = { "Pause", "Work", "Travel", "Fun", "Other" };
     Long[] times = { 0l, 0l, 0l, 0l, 0l };
     Integer[] imgid = {
@@ -59,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        instance = this;
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -83,10 +90,10 @@ public class MainActivity extends AppCompatActivity {
 
         notification_setup();
 
-        broadcast_setup();
+        //broadcast_setup();
     }
 
-    @Override
+    /*@Override
     protected void onDestroy() {
         unregisterReceiver(receiver);
         super.onDestroy();
@@ -108,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
         };
 
         registerReceiver(receiver,filter);
-    }
+    }*/
 
     public void notification_setup() {
         // create notification
@@ -120,13 +127,15 @@ public class MainActivity extends AppCompatActivity {
         notificationBuilder.setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
             .setContentTitle("TimeTracker")
             .setContentText("Current: Pause")
-            .setOngoing(true)
+            // FIXME: ongoing notifications are not shown on wearable
+            //.setOngoing(true)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setContentIntent(PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0))
             .setStyle(new NotificationCompat.MediaStyle().setShowActionsInCompactView(new int[]{0,1,2,3}));
 
         for (int i = 0; i < init_values.length; i++) {
-            PendingIntent current = PendingIntent.getBroadcast(this, 0, new Intent(init_values[i]), 0);
+            Intent intent = new Intent("org.butterbrot.floe.timetracker.Start",Uri.parse("foobar:"+init_values[i]));
+            PendingIntent current = PendingIntent.getBroadcast(this, 0, intent, 0);
             Log.d("TimeTracker","creating action "+init_values[i]);
             notificationBuilder.addAction(imgid[i], init_values[i], current);
         }
