@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -68,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
         iva = new ItemViewAdapter(this, init_values, imgid, times);
 
         // set content adapter for listview
+        // TODO: should be RecyclerView? nah, probably fine
         ListView lv = (ListView) findViewById(R.id.mainlist);
         lv.setAdapter(iva);
 
@@ -82,6 +84,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });*/
 
+        // TODO: use sharedpreferences to store times
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+
+
         notification_setup();
     }
 
@@ -94,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
             .setContentText("Current: Pause")
             // FIXME: ongoing notifications are not shown on wearable
             // FIXME: either create full wear app or re-create notification on dismissal
+            // see: http://stackoverflow.com/questions/24631932/android-wear-notification-is-not-displayed-if-flag-no-clear-is-used
             //.setOngoing(true)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setContentIntent(PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0))
