@@ -66,8 +66,9 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         // TODO: use sharedpreferences to store times
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
+        SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
+        for (int i = 0; i< times.length; i++)
+            times[i] = settings.getLong(Integer.toString(i),0l);
 
         // TODO: use local database, sync with log server
         iva = new ItemViewAdapter(this, init_values, imgid, times);
@@ -78,6 +79,16 @@ public class MainActivity extends AppCompatActivity {
         lv.setAdapter(iva);
 
         notification_setup();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
+        for (int i = 0; i< times.length; i++)
+            editor.putLong(Integer.toString(i),times[i]);
+        editor.commit();
     }
 
     public void notification_setup() {
