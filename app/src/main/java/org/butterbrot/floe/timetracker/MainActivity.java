@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
     String[] init_values = { "Pause", "Work", "Fun", "Sport", "Travel" };
     Long[] times = { 0l, 0l, 0l, 0l, 0l };
+    // FIXME: vector icons don't work on Moto 360
     Integer[] imgid = {
         R.drawable.ic_pause_black_24dp,
         R.drawable.ic_work_black_24dp,
@@ -61,14 +62,13 @@ public class MainActivity extends AppCompatActivity {
 
         instance = this;
 
+        Log.d("TimeTracker","onCreate");
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // TODO: use sharedpreferences to store times
-        SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
-        for (int i = 0; i< times.length; i++)
-            times[i] = settings.getLong(Integer.toString(i),0l);
+        load_settings();
 
         // TODO: use local database, sync with log server
         iva = new ItemViewAdapter(this, init_values, imgid, times);
@@ -81,14 +81,29 @@ public class MainActivity extends AppCompatActivity {
         notification_setup();
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
+    private void load_settings() {
+        SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
+        for (int i = 0; i< times.length; i++)
+            times[i] = settings.getLong(Integer.toString(i),0l);
+        current_category = settings.getInt("current_category",0);
+        start_time.setTimeInMillis( settings.getLong("start_time",start_time.getTimeInMillis()) );
+    }
+
+    private void save_settings() {
         SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
         for (int i = 0; i< times.length; i++)
             editor.putLong(Integer.toString(i),times[i]);
+        editor.putInt("current_category",current_category);
+        editor.putLong("start_time",start_time.getTimeInMillis());
         editor.commit();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d("TimeTracker","onStop - saving data");
+        save_settings();
     }
 
     public void notification_setup() {
