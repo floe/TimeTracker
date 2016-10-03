@@ -10,6 +10,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
 public class ItemViewAdapter extends ArrayAdapter<String> {
 
     private final Activity context;
@@ -34,7 +38,10 @@ public class ItemViewAdapter extends ArrayAdapter<String> {
         ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
         //TextView extratxt = (TextView) rowView.findViewById(R.id.textView1);
 
-        txtTitle.setText(itemname[position]+" "+values[position].toString());
+        SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
+        df.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        txtTitle.setText(itemname[position]+" "+df.format(new Date(values[position]*1000l)));
         imageView.setImageResource(imgid[position]);
         //extratxt.setText("Description "+itemname[position]);
 

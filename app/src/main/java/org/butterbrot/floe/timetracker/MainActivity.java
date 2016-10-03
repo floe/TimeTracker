@@ -36,14 +36,14 @@ public class MainActivity extends AppCompatActivity {
     // FIXME: this should be solved by using a separate service
     public static MainActivity instance = null;
 
-    String[] init_values = { "Pause", "Work", "Travel", "Fun", "Other" };
+    String[] init_values = { "Pause", "Work", "Fun", "Sport", "Travel" };
     Long[] times = { 0l, 0l, 0l, 0l, 0l };
     Integer[] imgid = {
-        android.R.drawable.ic_media_pause,
-        android.R.drawable.btn_star_big_off,
-        android.R.drawable.ic_media_play,
-        android.R.drawable.btn_star_big_on,
-        android.R.drawable.ic_btn_speak_now
+        R.drawable.ic_pause_black_24dp,
+        R.drawable.ic_work_black_24dp,
+        R.drawable.ic_mood_black_24dp,
+        R.drawable.ic_directions_bike_black_24dp,
+        R.drawable.ic_flight_black_24dp
     };
 
     ItemViewAdapter iva;
@@ -65,6 +65,10 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // TODO: use sharedpreferences to store times
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+
         // TODO: use local database, sync with log server
         iva = new ItemViewAdapter(this, init_values, imgid, times);
 
@@ -73,22 +77,6 @@ public class MainActivity extends AppCompatActivity {
         ListView lv = (ListView) findViewById(R.id.mainlist);
         lv.setAdapter(iva);
 
-        // set actions for start/stop button
-        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                Log.d("TimeTracker","FAB click");
-                start_tracking(0);
-            }
-        });*/
-
-        // TODO: use sharedpreferences to store times
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-
-
         notification_setup();
     }
 
@@ -96,13 +84,14 @@ public class MainActivity extends AppCompatActivity {
         // create notification
 
         notificationBuilder = new NotificationCompat.Builder(this);
-        notificationBuilder.setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
+        notificationBuilder.setSmallIcon(R.drawable.ic_alarm_on_black_24dp)
             .setContentTitle("TimeTracker")
             .setContentText("Current: Pause")
             // FIXME: ongoing notifications are not shown on wearable
             // FIXME: either create full wear app or re-create notification on dismissal
             // see: http://stackoverflow.com/questions/24631932/android-wear-notification-is-not-displayed-if-flag-no-clear-is-used
             //.setOngoing(true)
+            .setDeleteIntent(PendingIntent.getBroadcast(this, 0, new Intent("notify"), 0))
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setContentIntent(PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0))
             .setStyle(new NotificationCompat.MediaStyle().setShowActionsInCompactView(new int[]{0,1,2,3}));
