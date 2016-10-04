@@ -1,33 +1,28 @@
 package org.butterbrot.floe.timetracker;
 
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.VectorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationManagerCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,11 +35,11 @@ public class MainActivity extends AppCompatActivity {
     Long[] times = { 0l, 0l, 0l, 0l, 0l };
     // FIXME: vector icons don't work on Moto 360
     Integer[] imgid = {
-        R.drawable.ic_pause_black_24dp,
-        R.drawable.ic_work_black_24dp,
-        R.drawable.ic_mood_black_24dp,
-        R.drawable.ic_directions_bike_black_24dp,
-        R.drawable.ic_flight_black_24dp
+        R.drawable.ic_pause_white_24dp,
+        R.drawable.ic_work_white_24dp,
+        R.drawable.ic_mood_white_24dp,
+        R.drawable.ic_directions_bike_white_24dp,
+        R.drawable.ic_flight_white_24dp
     };
 
     ItemViewAdapter iva;
@@ -70,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
         load_settings();
 
-        // TODO: use local database, sync with log server
+        // TODO: use helper class instead of 3 separate arrays
         iva = new ItemViewAdapter(this, init_values, imgid, times);
 
         // set content adapter for listview
@@ -110,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
         // create notification
 
         notificationBuilder = new NotificationCompat.Builder(this);
-        notificationBuilder.setSmallIcon(R.drawable.ic_alarm_on_black_24dp)
+        notificationBuilder.setSmallIcon(R.drawable.ic_alarm_on_white_24dp)
             .setContentTitle("TimeTracker")
             .setContentText("Current: Pause")
             // FIXME: ongoing notifications are not shown on wearable
@@ -170,4 +165,15 @@ public class MainActivity extends AppCompatActivity {
         iva.notifyDataSetChanged();
     }
 
+    // from https://stackoverflow.com/questions/33696488/getting-bitmap-from-vector-drawable
+    private static Bitmap getBitmap(Context context, int drawableId) {
+        Drawable drawable = ContextCompat.getDrawable(context, drawableId);
+        VectorDrawable vectorDrawable = (VectorDrawable) drawable;
+        //VectorDrawable.
+        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(),vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        vectorDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        vectorDrawable.draw(canvas);
+        return bitmap;
+    }
 }

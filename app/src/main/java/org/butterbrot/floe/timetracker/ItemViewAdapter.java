@@ -3,6 +3,7 @@ package org.butterbrot.floe.timetracker;
 // adapted from http://www.androidinterview.com/android-custom-listview-with-image-and-text-using-arrayadapter/
 
 import android.app.Activity;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +31,8 @@ public class ItemViewAdapter extends ArrayAdapter<String> {
         this.values = values;
     }
 
-    public View getView(int position, View view, ViewGroup parent) {
+    @NonNull
+    public View getView(int position, View view, @NonNull ViewGroup parent) {
         LayoutInflater inflater = context.getLayoutInflater();
         View rowView = inflater.inflate(R.layout.itemview, null, true);
 
@@ -43,6 +45,8 @@ public class ItemViewAdapter extends ArrayAdapter<String> {
 
         txtTitle.setText(itemname[position]+" "+df.format(new Date(values[position]*1000l)));
         imageView.setImageResource(imgid[position]);
+        // turn white icons black for list view
+        imageView.getDrawable().setTint(0xFF000000);
         //extratxt.setText("Description "+itemname[position]);
 
         return rowView;
