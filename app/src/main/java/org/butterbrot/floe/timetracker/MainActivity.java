@@ -35,11 +35,11 @@ public class MainActivity extends AppCompatActivity {
     Long[] times = { 0l, 0l, 0l, 0l, 0l };
     // FIXME: vector icons don't work on Moto 360
     Integer[] imgid = {
-        R.drawable.ic_pause_white_24dp,
-        R.drawable.ic_work_white_24dp,
-        R.drawable.ic_mood_white_24dp,
-        R.drawable.ic_directions_bike_white_24dp,
-        R.drawable.ic_flight_white_24dp
+        R.drawable.ic_pause_white_bitmap,
+        R.drawable.ic_work_white_bitmap,
+        R.drawable.ic_mood_white_bitmap,
+        R.drawable.ic_bike_white_bitmap,
+        R.drawable.ic_flight_white_bitmap
     };
 
     ItemViewAdapter iva;
@@ -122,6 +122,12 @@ public class MainActivity extends AppCompatActivity {
             PendingIntent current = PendingIntent.getBroadcast(this, 0, intent, 0);
             Log.d("TimeTracker","creating action "+init_values[i]);
             notificationBuilder.addAction(imgid[i], init_values[i], current);
+            // FIXME: need to use a bitmap icon resource here, vector drawables don't work on (some) Android Wear devices
+            // see https://stackoverflow.com/questions/33078751/android-wear-vector-drawable-not-visible-on-real-device
+            // also doesn't seem to work with Icon and Notification.Action.Builder :-(
+            // Icon icon = Icon.createWithBitmap(getBitmap(this,imgid[i]));
+            // notificationBuilder.addAction(new Notification.Action.Builder(icon,init_values[i],current).build());
+
         }
 
         // Get an instance of the NotificationManager service
@@ -169,7 +175,6 @@ public class MainActivity extends AppCompatActivity {
     private static Bitmap getBitmap(Context context, int drawableId) {
         Drawable drawable = ContextCompat.getDrawable(context, drawableId);
         VectorDrawable vectorDrawable = (VectorDrawable) drawable;
-        //VectorDrawable.
         Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(),vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         vectorDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
