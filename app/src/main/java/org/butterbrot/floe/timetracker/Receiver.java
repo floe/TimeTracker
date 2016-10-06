@@ -8,7 +8,12 @@ import android.util.Log;
 public class Receiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         MainActivity activity = MainActivity.instance;
-        Log.d("TimeTracker","got broadcast: "+intent.getAction()+" "+intent.getData().getSchemeSpecificPart());
+        Log.d("TimeTracker","got broadcast: "+intent.getAction());
+        if (intent.getAction().equals("org.butterbrot.floe.timetracker.Notify")) {
+            activity.issue_notification();
+            return;
+        }
+        Log.d("TimeTracker","starting category: "+intent.getData().getSchemeSpecificPart());
         for (int i = 0; i < activity.init_values.length; i++) {
             if (intent.getData().getSchemeSpecificPart().equals(activity.init_values[i])) activity.start_tracking(i);
         }

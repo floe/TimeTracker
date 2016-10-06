@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
         lv.setAdapter(iva);
 
         notification_setup();
+        issue_notification();
     }
 
     private void load_settings() {
@@ -112,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
             // FIXME: either create full wear app or re-create notification on dismissal
             // see: http://stackoverflow.com/questions/24631932/android-wear-notification-is-not-displayed-if-flag-no-clear-is-used
             //.setOngoing(true)
-            .setDeleteIntent(PendingIntent.getBroadcast(this, 0, new Intent("notify"), 0))
+            .setDeleteIntent(PendingIntent.getBroadcast(this, 0, new Intent("org.butterbrot.floe.timetracker.Notify"), 0))
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setContentIntent(PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0))
             .setStyle(new NotificationCompat.MediaStyle().setShowActionsInCompactView(new int[]{0,1,2,3}));
@@ -129,7 +130,9 @@ public class MainActivity extends AppCompatActivity {
             // notificationBuilder.addAction(new Notification.Action.Builder(icon,init_values[i],current).build());
 
         }
+    }
 
+    public void issue_notification() {
         // Get an instance of the NotificationManager service
         notificationManager = NotificationManagerCompat.from(this);
         notificationManager.notify(notificationId, notificationBuilder.build());
