@@ -105,7 +105,9 @@ public class MainActivity extends AppCompatActivity {
     public void notification_setup() {
         // create notification
 
+        notificationManager = NotificationManagerCompat.from(this);
         notificationBuilder = new NotificationCompat.Builder(this);
+
         notificationBuilder.setSmallIcon(R.drawable.ic_alarm_on_white_24dp)
             .setContentTitle("TimeTracker")
             .setContentText("Current: Pause")
@@ -133,8 +135,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void issue_notification() {
-        // Get an instance of the NotificationManager service
-        notificationManager = NotificationManagerCompat.from(this);
+        SimpleDateFormat df = new SimpleDateFormat("HH:mm");
+        notificationBuilder.setContentText("Current: "+init_values[current_category]+" (since "+df.format(start_time.getTime())+")");
         notificationManager.notify(notificationId, notificationBuilder.build());
     }
 
@@ -168,9 +170,7 @@ public class MainActivity extends AppCompatActivity {
         times[current_category] += Math.round(difference/1000.0);
         start_time = now;
         current_category = category;
-        SimpleDateFormat df = new SimpleDateFormat("HH:mm");
-        notificationBuilder.setContentText("Current: "+init_values[category]+" (since "+df.format(now.getTime())+")");
-        notificationManager.notify(notificationId,notificationBuilder.build());
+        issue_notification();
         iva.notifyDataSetChanged();
     }
 
