@@ -14,7 +14,8 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.support.v7.app.NotificationCompat;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.media.app.NotificationCompat.MediaStyle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -106,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
         // create notification
 
         notificationManager = NotificationManagerCompat.from(this);
-        notificationBuilder = new NotificationCompat.Builder(this);
+        notificationBuilder = new NotificationCompat.Builder(this, "floe");
 
         notificationBuilder.setSmallIcon(R.drawable.ic_alarm_on_white_24dp)
             .setContentTitle("TimeTracker")
@@ -118,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
             .setDeleteIntent(PendingIntent.getBroadcast(this, 0, new Intent("org.butterbrot.floe.timetracker.Notify"), 0))
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setContentIntent(PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0))
-            .setStyle(new NotificationCompat.MediaStyle().setShowActionsInCompactView(new int[]{0,1,2,3}));
+            .setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(new int[]{0,1,2,3}));
 
         for (int i = 0; i < init_values.length; i++) {
             Intent intent = new Intent("org.butterbrot.floe.timetracker.Start",Uri.parse("foobar:"+init_values[i]));
