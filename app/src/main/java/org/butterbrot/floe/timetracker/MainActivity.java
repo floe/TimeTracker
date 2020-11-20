@@ -10,12 +10,12 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.VectorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.NotificationManagerCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.media.app.NotificationCompat.MediaStyle;
+import androidx.core.app.NotificationManagerCompat;
+//import androidx.core.app.NotificationManager;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+//import android.support.v4.media.app.NotificationCompat.MediaStyle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     Long[] times = { 0l, 0l, 0l, 0l, 0l };
     // FIXME: vector icons don't work on Moto 360
     Integer[] imgid = {
-        R.drawable.ic_pause_white_bitmap,
+        R.drawable.ic_pause_white_24dp,
         R.drawable.ic_work_white_bitmap,
         R.drawable.ic_mood_white_bitmap,
         R.drawable.ic_bike_white_bitmap,
@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
             .setDeleteIntent(PendingIntent.getBroadcast(this, 0, new Intent("org.butterbrot.floe.timetracker.Notify"), 0))
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setContentIntent(PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0))
-            .setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(new int[]{0,1,2,3}));
+            .setStyle(new androidx.core.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(new int[]{0,1,2,3}));
 
         for (int i = 0; i < init_values.length; i++) {
             Intent intent = new Intent("org.butterbrot.floe.timetracker.Start",Uri.parse("foobar:"+init_values[i]));
