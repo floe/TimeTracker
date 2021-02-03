@@ -1,5 +1,7 @@
 package org.butterbrot.floe.timetracker;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -9,13 +11,14 @@ import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.VectorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import androidx.core.app.NotificationManagerCompat;
-//import androidx.core.app.NotificationManager;
+
+import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-//import android.support.v4.media.app.NotificationCompat.MediaStyle;
+
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,6 +27,7 @@ import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     public static MainActivity instance = null;
 
     String[] init_values = { "Pause", "Work", "Fun", "Sport", "Travel" };
-    Long[] times = { 0l, 0l, 0l, 0l, 0l };
+    Long[] times = { 0L, 0L, 0L, 0L, 0L };
     // FIXME: vector icons don't work on Moto 360
     Integer[] imgid = {
         R.drawable.ic_pause_white_24dp,
@@ -48,9 +52,10 @@ public class MainActivity extends AppCompatActivity {
     int current_category = 0;
     Calendar start_time = Calendar.getInstance();
     int notificationId = 0xF10E;
+    String channelId = "floe";
 
     NotificationCompat.Builder notificationBuilder;
-    NotificationManagerCompat notificationManager;
+    NotificationManager notificationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
     private void load_settings() {
         SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
         for (int i = 0; i< times.length; i++)
-            times[i] = settings.getLong(Integer.toString(i),0l);
+            times[i] = settings.getLong(Integer.toString(i), 0L);
         current_category = settings.getInt("current_category",0);
         start_time.setTimeInMillis( settings.getLong("start_time",start_time.getTimeInMillis()) );
     }
@@ -93,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
             editor.putLong(Integer.toString(i),times[i]);
         editor.putInt("current_category",current_category);
         editor.putLong("start_time",start_time.getTimeInMillis());
-        editor.commit();
+        editor.apply();
     }
 
     @Override
@@ -106,8 +111,12 @@ public class MainActivity extends AppCompatActivity {
     public void notification_setup() {
         // create notification
 
-        notificationManager = NotificationManagerCompat.from(this);
-        notificationBuilder = new NotificationCompat.Builder(this, "floe");
+        notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel nc = new NotificationChannel(channelId, "blah", NotificationManager.IMPORTANCE_LOW);
+            notificationManager.createNotificationChannel(nc);
+        }
+        notificationBuilder = new NotificationCompat.Builder(this, channelId);
 
         notificationBuilder.setSmallIcon(R.drawable.ic_alarm_on_white_24dp)
             .setContentTitle("TimeTracker")
@@ -115,11 +124,11 @@ public class MainActivity extends AppCompatActivity {
             // FIXME: ongoing notifications are not shown on wearable
             // FIXME: either create full wear app or re-create notification on dismissal
             // see: http://stackoverflow.com/questions/24631932/android-wear-notification-is-not-displayed-if-flag-no-clear-is-used
-            //.setOngoing(true)
+            .setOngoing(true)
             .setDeleteIntent(PendingIntent.getBroadcast(this, 0, new Intent("org.butterbrot.floe.timetracker.Notify"), 0))
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setContentIntent(PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0))
-            .setStyle(new androidx.core.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(new int[]{0,1,2,3}));
+            .setStyle(new androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0,1,2,3));
 
         for (int i = 0; i < init_values.length; i++) {
             Intent intent = new Intent("org.butterbrot.floe.timetracker.Start",Uri.parse("foobar:"+init_values[i]));
@@ -136,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void issue_notification() {
-        SimpleDateFormat df = new SimpleDateFormat("HH:mm");
+        SimpleDateFormat df = new SimpleDateFormat("HH:mm", Locale.getDefault());
         notificationBuilder.setContentText("Current: "+init_values[current_category]+" (since "+df.format(start_time.getTime())+")");
         notificationManager.notify(notificationId, notificationBuilder.build());
     }

@@ -3,9 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/TimeTracker.iml" filepath="$PROJECT_DIR$/TimeTracker.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/assets/assets.iml" filepath="$PROJECT_DIR$/assets/assets.iml" />
-      <module fileurl="file://$PROJECT_DIR$/wear/wear.iml" filepath="$PROJECT_DIR$/wear/wear.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/TimeTracker.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/TimeTracker.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/assets/TimeTracker.assets.iml" filepath="$PROJECT_DIR$/.idea/modules/assets/TimeTracker.assets.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/wear/TimeTracker.wear.iml" filepath="$PROJECT_DIR$/.idea/modules/wear/TimeTracker.wear.iml" />
     </modules>
   </component>
 </project>

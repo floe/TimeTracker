@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 28
-    buildToolsVersion "29.0.0"
+    buildToolsVersion "29.0.2"
     defaultConfig {
         applicationId "org.butterbrot.floe.timetracker"
         minSdkVersion 21
@@ -21,7 +21,9 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.media:media:1.2.1'
+    implementation 'com.google.android.material:material:1.2.1'
     //implementation 'androidx.'
     //androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
     //    exclude group: 'com.android.support', module: 'support-annotations'
