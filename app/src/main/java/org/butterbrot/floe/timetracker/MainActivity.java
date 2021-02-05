@@ -110,10 +110,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void notification_setup() {
         // create notification
-
         notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+        //NotificationManagerCompat.from(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel nc = new NotificationChannel(channelId, "blah", NotificationManager.IMPORTANCE_LOW);
+            NotificationChannel nc = new NotificationChannel(channelId, "TimeTracker Channel", NotificationManager.IMPORTANCE_DEFAULT);
             notificationManager.createNotificationChannel(nc);
         }
         notificationBuilder = new NotificationCompat.Builder(this, channelId);
@@ -121,18 +121,16 @@ public class MainActivity extends AppCompatActivity {
         notificationBuilder.setSmallIcon(R.drawable.ic_alarm_on_white_24dp)
             .setContentTitle("TimeTracker")
             .setContentText("Current: Pause")
-            // FIXME: ongoing notifications are not shown on wearable
-            // FIXME: either create full wear app or re-create notification on dismissal
-            // see: http://stackoverflow.com/questions/24631932/android-wear-notification-is-not-displayed-if-flag-no-clear-is-used
-            .setOngoing(true)
-            .setDeleteIntent(PendingIntent.getBroadcast(this, 0, new Intent("org.butterbrot.floe.timetracker.Notify"), 0))
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setContentIntent(PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0))
             .setStyle(new androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0,1,2,3));
+        Intent intent = new Intent("org.butterbrot.floe.timetracker.Notify",Uri.parse("foobar:nope"),this,Receiver.class);
+        PendingIntent current = PendingIntent.getBroadcast(this, 0, intent, 0);
+        notificationBuilder.setDeleteIntent(current);
 
         for (int i = 0; i < init_values.length; i++) {
-            Intent intent = new Intent("org.butterbrot.floe.timetracker.Start",Uri.parse("foobar:"+init_values[i]));
-            PendingIntent current = PendingIntent.getBroadcast(this, 0, intent, 0);
+            intent = new Intent("org.butterbrot.floe.timetracker.Start",Uri.parse("foobar:"+init_values[i]),this,Receiver.class);
+            current = PendingIntent.getBroadcast(this, 0, intent, 0);
             Log.d("TimeTracker","creating action "+init_values[i]);
             notificationBuilder.addAction(imgid[i], init_values[i], current);
             // FIXME: need to use a bitmap icon resource here, vector drawables don't work on (some) Android Wear devices

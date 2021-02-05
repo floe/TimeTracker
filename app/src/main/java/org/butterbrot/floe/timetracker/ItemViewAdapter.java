@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 public class ItemViewAdapter extends ArrayAdapter<String> {
@@ -41,7 +42,7 @@ public class ItemViewAdapter extends ArrayAdapter<String> {
         ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
         //TextView extratxt = (TextView) rowView.findViewById(R.id.textView1);
 
-        SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
+        SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
         df.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         txtTitle.setText(itemname[position]+" "+df.format(new Date(values[position]*1000l)));

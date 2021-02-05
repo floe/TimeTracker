@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.util.Log;
 
 public class Receiver extends BroadcastReceiver {
+    @Override
     public void onReceive(Context context, Intent intent) {
         MainActivity activity = MainActivity.instance;
         Log.d("TimeTracker","got broadcast: "+intent.getAction());
