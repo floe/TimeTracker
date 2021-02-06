@@ -16,7 +16,6 @@ import android.os.Bundle;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
-import androidx.core.app.NotificationCompat.WearableExtender;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -40,13 +39,12 @@ public class MainActivity extends AppCompatActivity {
 
     String[] init_values = { "Pause", "Work", "Fun", "Sport", "Travel" };
     Long[] times = { 0L, 0L, 0L, 0L, 0L };
-    // FIXME: vector icons don't work on Moto 360
     Integer[] imgid = {
         R.drawable.ic_pause_white_24dp,
-        R.drawable.ic_work_white_bitmap,
-        R.drawable.ic_mood_white_bitmap,
-        R.drawable.ic_bike_white_bitmap,
-        R.drawable.ic_flight_white_bitmap
+        R.drawable.ic_work_white_24dp,
+        R.drawable.ic_mood_white_24dp,
+        R.drawable.ic_bike_white_24dp,
+        R.drawable.ic_flight_white_24dp
     };
 
     ItemViewAdapter iva;
@@ -110,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void notification_setup() {
-        
+
         // create notification channel (on Oreo or newer)
         notificationManager = NotificationManagerCompat.from(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -125,7 +123,8 @@ public class MainActivity extends AppCompatActivity {
             .setContentText("Current: Pause")
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setContentIntent(PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0))
-            .setStyle(new androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0,1,2,3));
+            .setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary))
+            .setStyle(new androidx.media.app.NotificationCompat.DecoratedMediaCustomViewStyle().setShowActionsInCompactView(0,1,2));
 
         // set intent for dismissing notification
         Intent intent = new Intent("org.butterbrot.floe.timetracker.Notify",Uri.parse("foobar:nope"),this,Receiver.class);
@@ -138,11 +137,6 @@ public class MainActivity extends AppCompatActivity {
             current = PendingIntent.getBroadcast(this, 0, intent, 0);
             Log.d("TimeTracker","creating action "+init_values[i]);
             notificationBuilder.addAction(imgid[i], init_values[i], current);
-            // FIXME: need to use a bitmap icon resource here, vector drawables don't work on (some) Android Wear devices
-            // see https://stackoverflow.com/questions/33078751/android-wear-vector-drawable-not-visible-on-real-device
-            // also doesn't seem to work with Icon and Notification.Action.Builder :-(
-            // Icon icon = Icon.createWithBitmap(getBitmap(this,imgid[i]));
-            // notificationBuilder.addAction(new Notification.Action.Builder(icon,init_values[i],current).build());
         }
     }
 
