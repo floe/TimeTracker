@@ -3,6 +3,7 @@ package org.butterbrot.floe.timetracker;
 // adapted from http://www.androidinterview.com/android-custom-listview-with-image-and-text-using-arrayadapter/
 
 import android.app.Activity;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,6 +59,10 @@ public class ItemViewAdapter extends ArrayAdapter<String> {
                 activity.start_tracking(position);
             }
         });
+
+        if (position == MainActivity.instance.current_category)
+            txtTitle.setTypeface(null, Typeface.BOLD);
+        
         return rowView;
     };
 }
