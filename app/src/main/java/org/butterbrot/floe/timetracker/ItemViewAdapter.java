@@ -34,7 +34,7 @@ public class ItemViewAdapter extends ArrayAdapter<String> {
     }
 
     @NonNull
-    public View getView(int position, View view, @NonNull ViewGroup parent) {
+    public View getView(final int position, View view, @NonNull ViewGroup parent) {
         LayoutInflater inflater = context.getLayoutInflater();
         View rowView = inflater.inflate(R.layout.itemview, null, true);
 
@@ -51,6 +51,13 @@ public class ItemViewAdapter extends ArrayAdapter<String> {
         imageView.getDrawable().setTint(0xFF000000);
         //extratxt.setText("Description "+itemname[position]);
 
+        rowView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MainActivity activity = MainActivity.instance;
+                activity.start_tracking(position);
+            }
+        });
         return rowView;
     };
 }

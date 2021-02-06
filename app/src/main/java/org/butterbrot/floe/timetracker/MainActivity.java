@@ -15,6 +15,8 @@ import android.os.Build;
 import android.os.Bundle;
 
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.app.NotificationCompat.WearableExtender;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -55,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
     String channelId = "floe";
 
     NotificationCompat.Builder notificationBuilder;
-    NotificationManager notificationManager;
+    NotificationManagerCompat notificationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +77,6 @@ public class MainActivity extends AppCompatActivity {
         iva = new ItemViewAdapter(this, init_values, imgid, times);
 
         // set content adapter for listview
-        // TODO: should be RecyclerView? nah, probably fine
         ListView lv = (ListView) findViewById(R.id.mainlist);
         lv.setAdapter(iva);
 
@@ -109,25 +110,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void notification_setup() {
-        // create notification
-        notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-        //NotificationManagerCompat.from(this);
+        
+        // create notification channel (on Oreo or newer)
+        notificationManager = NotificationManagerCompat.from(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel nc = new NotificationChannel(channelId, "TimeTracker Channel", NotificationManager.IMPORTANCE_DEFAULT);
             notificationManager.createNotificationChannel(nc);
         }
-        notificationBuilder = new NotificationCompat.Builder(this, channelId);
 
-        notificationBuilder.setSmallIcon(R.drawable.ic_alarm_on_white_24dp)
+        // create notification itself
+        notificationBuilder = new NotificationCompat.Builder(this, channelId)
+            .setSmallIcon(R.drawable.ic_alarm_on_white_24dp)
             .setContentTitle("TimeTracker")
             .setContentText("Current: Pause")
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setContentIntent(PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0))
             .setStyle(new androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0,1,2,3));
+
+        // set intent for dismissing notification
         Intent intent = new Intent("org.butterbrot.floe.timetracker.Notify",Uri.parse("foobar:nope"),this,Receiver.class);
         PendingIntent current = PendingIntent.getBroadcast(this, 0, intent, 0);
         notificationBuilder.setDeleteIntent(current);
 
+        // set individual category actions
         for (int i = 0; i < init_values.length; i++) {
             intent = new Intent("org.butterbrot.floe.timetracker.Start",Uri.parse("foobar:"+init_values[i]),this,Receiver.class);
             current = PendingIntent.getBroadcast(this, 0, intent, 0);
@@ -138,7 +143,6 @@ public class MainActivity extends AppCompatActivity {
             // also doesn't seem to work with Icon and Notification.Action.Builder :-(
             // Icon icon = Icon.createWithBitmap(getBitmap(this,imgid[i]));
             // notificationBuilder.addAction(new Notification.Action.Builder(icon,init_values[i],current).build());
-
         }
     }
 
