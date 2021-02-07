@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     // FIXME: this should be solved by using a separate service
     public static MainActivity instance = null;
 
+    // TODO: should rather use a helper class instead of 3 arrays
     String[] init_values = { "Pause", "Work", "Fun", "Sport", "Travel" };
     Long[] times = { 0L, 0L, 0L, 0L, 0L };
     Integer[] imgid = {
@@ -43,6 +44,9 @@ public class MainActivity extends AppCompatActivity {
         R.drawable.ic_bike_white_24dp,
         R.drawable.ic_flight_white_24dp
     };
+
+    // TODO: how about user-configurable categories? (with floating action button or so)
+    // TODO: better logging, maybe also with separate logfile for category changes
 
     ItemViewAdapter iva;
 
@@ -79,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
         issue_notification();
     }
 
+    // TODO: check if lifecycle handling is complete for load/save
     private void load_settings() {
         SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
         for (int i = 0; i< times.length; i++)
@@ -154,19 +159,22 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_reset:
+                // TODO: add dialog before wiping data
                 start_tracking(0);
                 Arrays.fill(times,0L);
                 iva.notifyDataSetChanged();
                 return true;
             case R.id.action_export:
+                // TODO: actually export something :-)
                 return true;
+            // TODO: add an "about" action
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
     public void start_tracking(int category) {
-        Toast.makeText(this,init_values[category],Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,"Now tracking: "+init_values[category],Toast.LENGTH_SHORT).show();
         if (current_category == category) return;
         Calendar now = Calendar.getInstance();
         long difference = now.getTimeInMillis() - start_time.getTimeInMillis();
