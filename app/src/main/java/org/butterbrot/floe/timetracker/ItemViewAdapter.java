@@ -62,7 +62,7 @@ public class ItemViewAdapter extends ArrayAdapter<String> {
 
         if (position == MainActivity.instance.current_category)
             txtTitle.setTypeface(null, Typeface.BOLD);
-        
+
         return rowView;
     };
 }
