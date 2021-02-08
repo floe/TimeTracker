@@ -14,4 +14,10 @@
         android:orderInCategory="100"
         android:title="Reset data"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_about"
+        android:icon="@android:drawable/ic_menu_help"
+        android:orderInCategory="100"
+        android:title="About"
+        app:showAsAction="ifRoom" />
 </menu>

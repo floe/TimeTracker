@@ -4,12 +4,14 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
@@ -148,6 +150,37 @@ public class MainActivity extends AppCompatActivity {
         notificationManager.notify(notificationId, notificationBuilder.build());
     }
 
+    public boolean about() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+            .setTitle("About TimeTracker")
+            .setMessage("a minimalistic time tracking app\n(c) 2021 by Florian Echtler <floe@butterbrot.org>\nhttps://github.com/floe/TimeTracker")
+            .setPositiveButton("Close",null);
+        builder.create().show();
+        return true;
+    }
+
+    public boolean export() {
+        // TODO: actually export something :-)
+        return true;
+    }
+
+    public boolean reset() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+            .setTitle("Clear data?")
+            .setMessage("Reset all durations to zero?")
+            .setNegativeButton("Cancel",null)
+            .setPositiveButton("Reset",new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    Arrays.fill(times,0L);
+                    start_time = Calendar.getInstance();
+                    start_tracking(0);
+                    iva.notifyDataSetChanged();
+                }
+            });
+        builder.create().show();
+        return true;
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -158,18 +191,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_reset:
-                // TODO: add dialog before wiping data
-                start_tracking(0);
-                Arrays.fill(times,0L);
-                iva.notifyDataSetChanged();
-                return true;
-            case R.id.action_export:
-                // TODO: actually export something :-)
-                return true;
-            // TODO: add an "about" action
-            default:
-                return super.onOptionsItemSelected(item);
+            case R.id.action_reset:  return  reset();
+            case R.id.action_about:  return  about();
+            case R.id.action_export: return export();
+            default: return super.onOptionsItemSelected(item);
         }
     }
 
