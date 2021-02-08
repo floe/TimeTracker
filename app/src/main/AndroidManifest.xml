@@ -25,7 +25,7 @@
         <receiver
             android:name=".Receiver"
             android:enabled="true"
-            android:exported="true">
+            android:exported="false">
             <intent-filter>
                 <action android:name="org.butterbrot.floe.timetracker.Start" />
                 <action android:name="org.butterbrot.floe.timetracker.Notify" />
