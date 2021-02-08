@@ -4,19 +4,19 @@
     tools:context="org.butterbrot.floe.timetracker.MainActivity">
     <item
         android:id="@+id/action_export"
-        android:icon="@android:drawable/ic_menu_save"
+        android:icon="@drawable/ic_baseline_save_24"
         android:orderInCategory="100"
         android:title="Export data"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_reset"
-        android:icon="@android:drawable/ic_menu_delete"
+        android:icon="@drawable/ic_baseline_delete_forever_24"
         android:orderInCategory="100"
         android:title="Reset data"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_about"
-        android:icon="@android:drawable/ic_menu_help"
+        android:icon="@drawable/ic_baseline_info_24"
         android:orderInCategory="100"
         android:title="About"
         app:showAsAction="ifRoom" />

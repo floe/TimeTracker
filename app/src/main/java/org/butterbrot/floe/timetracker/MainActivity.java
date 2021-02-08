@@ -152,6 +152,7 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean about() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
+            .setIcon(R.drawable.ic_baseline_info_24)
             .setTitle("About TimeTracker")
             .setMessage("a minimalistic time tracking app\n(c) 2021 by Florian Echtler <floe@butterbrot.org>\nhttps://github.com/floe/TimeTracker")
             .setPositiveButton("Close",null);
@@ -168,6 +169,7 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
             .setTitle("Clear data?")
             .setMessage("Reset all durations to zero?")
+            .setIcon(R.drawable.ic_baseline_warning_24)
             .setNegativeButton("Cancel",null)
             .setPositiveButton("Reset",new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
