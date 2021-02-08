@@ -25,7 +25,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -36,14 +35,14 @@ public class MainActivity extends AppCompatActivity {
     // FIXME: this should be solved by using a separate service
     public static MainActivity instance = null;
 
-    public class Category {
+    public static class Category {
         public Category(String s, Long l, Integer i) { name = s; duration = l; imgid = i; }
         public String name;
         public Long duration;
         public Integer imgid;
     }
 
-    Category categories[] = {
+    Category[] categories = {
         new Category("Pause", 0L, R.drawable.ic_pause_white_24dp ),
         new Category("Work",  0L, R.drawable.ic_work_white_24dp  ),
         new Category("Fun",   0L, R.drawable.ic_mood_white_24dp  ),
@@ -139,11 +138,11 @@ public class MainActivity extends AppCompatActivity {
         notificationBuilder.setDeleteIntent(current);
 
         // set individual category actions
-        for (int i = 0; i < categories.length; i++) {
-            intent = new Intent("org.butterbrot.floe.timetracker.Start",Uri.parse("foobar:"+categories[i].name),this,Receiver.class);
+        for (Category cat: categories) {
+            intent = new Intent("org.butterbrot.floe.timetracker.Start",Uri.parse("foobar:"+cat.name),this,Receiver.class);
             current = PendingIntent.getBroadcast(this, 0, intent, 0);
-            Log.d("TimeTracker","creating action "+categories[i].name);
-            notificationBuilder.addAction(categories[i].imgid, categories[i].name, current);
+            Log.d("TimeTracker","creating action "+cat.name);
+            notificationBuilder.addAction(cat.imgid, cat.name, current);
         }
     }
 
