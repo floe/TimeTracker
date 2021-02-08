@@ -38,14 +38,14 @@ public class ItemViewAdapter extends ArrayAdapter<String> {
         LayoutInflater inflater = context.getLayoutInflater();
         View rowView = inflater.inflate(R.layout.itemview, null, true);
 
-        TextView txtTitle = (TextView) rowView.findViewById(R.id.content);
-        ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
+        TextView txtTitle = rowView.findViewById(R.id.content);
+        ImageView imageView = rowView.findViewById(R.id.icon);
         //TextView extratxt = (TextView) rowView.findViewById(R.id.textView1);
 
         SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
         df.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-        txtTitle.setText(items[position].name+" "+df.format(new Date(items[position].duration*1000l)));
+        txtTitle.setText(items[position].name+" "+df.format(new Date(items[position].duration*1000L)));
         imageView.setImageResource(items[position].imgid);
         // turn white icons black for list view
         imageView.getDrawable().setTint(0xFF000000);
@@ -63,5 +63,5 @@ public class ItemViewAdapter extends ArrayAdapter<String> {
             txtTitle.setTypeface(null, Typeface.BOLD);
 
         return rowView;
-    };
+    }
 }

@@ -58,8 +58,8 @@ public class MainActivity extends AppCompatActivity {
 
     int current_category = 0;
     Calendar start_time = Calendar.getInstance();
-    int notificationId = 0xF10E;
-    String channelId = "floe";
+    final int notificationId = 0xF10E;
+    final String channelId = "floe";
 
     NotificationCompat.Builder notificationBuilder;
     NotificationManagerCompat notificationManager;
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d("TimeTracker","onCreate");
 
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         load_settings();
@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
         iva = new ItemViewAdapter(this, categories);
 
         // set content adapter for listview
-        ListView lv = (ListView) findViewById(R.id.mainlist);
+        ListView lv = findViewById(R.id.mainlist);
         lv.setAdapter(iva);
 
         notification_setup();
