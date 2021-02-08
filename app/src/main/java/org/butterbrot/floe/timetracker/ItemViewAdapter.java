@@ -39,7 +39,6 @@ public class ItemViewAdapter extends ArrayAdapter<String> {
 
         TextView txtTitle = rowView.findViewById(R.id.content);
         ImageView imageView = rowView.findViewById(R.id.icon);
-        //TextView extratxt = (TextView) rowView.findViewById(R.id.textView1);
 
         SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
         df.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -48,7 +47,6 @@ public class ItemViewAdapter extends ArrayAdapter<String> {
         imageView.setImageResource(items[position].imgid);
         // turn white icons black for list view
         imageView.getDrawable().setTint(0xFF000000);
-        //extratxt.setText("Description "+itemname[position]);
 
         rowView.setOnClickListener(new View.OnClickListener() {
             @Override

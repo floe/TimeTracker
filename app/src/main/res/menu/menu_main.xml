@@ -6,18 +6,18 @@
         android:id="@+id/action_export"
         android:icon="@drawable/ic_baseline_save_24"
         android:orderInCategory="100"
-        android:title="Export data"
+        android:title="@string/action_export"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_reset"
         android:icon="@drawable/ic_baseline_delete_forever_24"
         android:orderInCategory="100"
-        android:title="Reset data"
+        android:title="@string/action_reset"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_about"
         android:icon="@drawable/ic_baseline_info_24"
         android:orderInCategory="100"
-        android:title="About"
+        android:title="@string/action_about"
         app:showAsAction="ifRoom" />
 </menu>

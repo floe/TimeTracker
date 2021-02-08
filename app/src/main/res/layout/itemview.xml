@@ -12,7 +12,8 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginTop="5dp"
-        android:src="@android:drawable/ic_lock_idle_alarm" />
+        android:src="@android:drawable/ic_lock_idle_alarm"
+        android:contentDescription="@string/icon" />
 
     <TextView
         android:id="@+id/content"
