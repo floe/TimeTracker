@@ -2,6 +2,8 @@
 
 ## "Cloudless", minimalistic personal time tracking app
 
+![Screenshot](screenshot.png)
+
 All time tracking apps I could find were ...
   * completely overloaded with features
   * bugged me with advertisements
