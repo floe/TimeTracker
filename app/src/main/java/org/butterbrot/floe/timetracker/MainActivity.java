@@ -36,15 +36,19 @@ public class MainActivity extends AppCompatActivity {
     // FIXME: this should be solved by using a separate service
     public static MainActivity instance = null;
 
-    // TODO: should rather use a helper class instead of 3 arrays
-    String[] init_values = { "Pause", "Work", "Fun", "Sport", "Travel" };
-    Long[] times = { 0L, 0L, 0L, 0L, 0L };
-    Integer[] imgid = {
-        R.drawable.ic_pause_white_24dp,
-        R.drawable.ic_work_white_24dp,
-        R.drawable.ic_mood_white_24dp,
-        R.drawable.ic_bike_white_24dp,
-        R.drawable.ic_flight_white_24dp
+    public class Category {
+        public Category(String s, Long l, Integer i) { name = s; duration = l; imgid = i; }
+        public String name;
+        public Long duration;
+        public Integer imgid;
+    }
+
+    Category categories[] = {
+        new Category("Pause", 0L, R.drawable.ic_pause_white_24dp ),
+        new Category("Work",  0L, R.drawable.ic_work_white_24dp  ),
+        new Category("Fun",   0L, R.drawable.ic_mood_white_24dp  ),
+        new Category("Sport" ,0L, R.drawable.ic_bike_white_24dp  ),
+        new Category("Travel",0L, R.drawable.ic_flight_white_24dp)
     };
 
     // TODO: how about user-configurable categories? (with floating action button or so)
@@ -74,8 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
         load_settings();
 
-        // TODO: use helper class instead of 3 separate arrays
-        iva = new ItemViewAdapter(this, init_values, imgid, times);
+        iva = new ItemViewAdapter(this, categories);
 
         // set content adapter for listview
         ListView lv = (ListView) findViewById(R.id.mainlist);
@@ -88,8 +91,8 @@ public class MainActivity extends AppCompatActivity {
     // TODO: check if lifecycle handling is complete for load/save
     private void load_settings() {
         SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
-        for (int i = 0; i< times.length; i++)
-            times[i] = settings.getLong(Integer.toString(i), 0L);
+        for (int i = 0; i< categories.length; i++)
+            categories[i].duration = settings.getLong(Integer.toString(i), 0L);
         current_category = settings.getInt("current_category",0);
         start_time.setTimeInMillis( settings.getLong("start_time",start_time.getTimeInMillis()) );
     }
@@ -97,8 +100,8 @@ public class MainActivity extends AppCompatActivity {
     private void save_settings() {
         SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
-        for (int i = 0; i< times.length; i++)
-            editor.putLong(Integer.toString(i),times[i]);
+        for (int i = 0; i< categories.length; i++)
+            editor.putLong(Integer.toString(i),categories[i].duration);
         editor.putInt("current_category",current_category);
         editor.putLong("start_time",start_time.getTimeInMillis());
         editor.apply();
@@ -136,17 +139,17 @@ public class MainActivity extends AppCompatActivity {
         notificationBuilder.setDeleteIntent(current);
 
         // set individual category actions
-        for (int i = 0; i < init_values.length; i++) {
-            intent = new Intent("org.butterbrot.floe.timetracker.Start",Uri.parse("foobar:"+init_values[i]),this,Receiver.class);
+        for (int i = 0; i < categories.length; i++) {
+            intent = new Intent("org.butterbrot.floe.timetracker.Start",Uri.parse("foobar:"+categories[i].name),this,Receiver.class);
             current = PendingIntent.getBroadcast(this, 0, intent, 0);
-            Log.d("TimeTracker","creating action "+init_values[i]);
-            notificationBuilder.addAction(imgid[i], init_values[i], current);
+            Log.d("TimeTracker","creating action "+categories[i].name);
+            notificationBuilder.addAction(categories[i].imgid, categories[i].name, current);
         }
     }
 
     public void issue_notification() {
         SimpleDateFormat df = new SimpleDateFormat("HH:mm", Locale.getDefault());
-        notificationBuilder.setContentText("Current: "+init_values[current_category]+" (since "+df.format(start_time.getTime())+")");
+        notificationBuilder.setContentText("Current: "+categories[current_category].name+" (since "+df.format(start_time.getTime())+")");
         notificationManager.notify(notificationId, notificationBuilder.build());
     }
 
@@ -162,6 +165,7 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean export() {
         // TODO: actually export something :-)
+        Toast.makeText( this,"Exporting data... (Warning: not yet implemented)",Toast.LENGTH_LONG).show();
         return true;
     }
 
@@ -173,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
             .setNegativeButton("Cancel",null)
             .setPositiveButton("Reset",new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    Arrays.fill(times,0L);
+                    for (Category cat: categories) cat.duration = 0L;
                     start_time = Calendar.getInstance();
                     start_tracking(0);
                     iva.notifyDataSetChanged();
@@ -201,11 +205,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void start_tracking(int category) {
-        Toast.makeText(this,"Now tracking: "+init_values[category],Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,"Now tracking: "+categories[category].name,Toast.LENGTH_SHORT).show();
         if (current_category == category) return;
         Calendar now = Calendar.getInstance();
         long difference = now.getTimeInMillis() - start_time.getTimeInMillis();
-        times[current_category] += Math.round(difference/1000.0);
+        categories[current_category].duration += Math.round(difference/1000.0);
         start_time = now;
         current_category = category;
         issue_notification();

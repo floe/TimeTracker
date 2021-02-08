@@ -14,6 +14,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -21,17 +22,15 @@ import java.util.TimeZone;
 public class ItemViewAdapter extends ArrayAdapter<String> {
 
     private final Activity context;
-    private final String[] itemname;
-    private final Integer[] imgid;
-    private final Long[] values;
+    private final MainActivity.Category[] items;
 
-    public ItemViewAdapter(Activity context, String[] itemname, Integer[] imgid, Long[] values) {
-        super(context, R.layout.itemview, itemname);
+    public ItemViewAdapter(Activity context, MainActivity.Category[] items) {
+        super(context, R.layout.itemview);
 
         this.context = context;
-        this.itemname = itemname;
-        this.imgid = imgid;
-        this.values = values;
+        this.items = items;
+
+        for (MainActivity.Category cat: items) add(cat.name);
     }
 
     @NonNull
@@ -46,8 +45,8 @@ public class ItemViewAdapter extends ArrayAdapter<String> {
         SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
         df.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-        txtTitle.setText(itemname[position]+" "+df.format(new Date(values[position]*1000l)));
-        imageView.setImageResource(imgid[position]);
+        txtTitle.setText(items[position].name+" "+df.format(new Date(items[position].duration*1000l)));
+        imageView.setImageResource(items[position].imgid);
         // turn white icons black for list view
         imageView.getDrawable().setTint(0xFF000000);
         //extratxt.setText("Description "+itemname[position]);

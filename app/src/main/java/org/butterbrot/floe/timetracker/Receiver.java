@@ -15,8 +15,8 @@ public class Receiver extends BroadcastReceiver {
             return;
         }
         Log.d("TimeTracker","starting category: "+intent.getData().getSchemeSpecificPart());
-        for (int i = 0; i < activity.init_values.length; i++) {
-            if (intent.getData().getSchemeSpecificPart().equals(activity.init_values[i])) activity.start_tracking(i);
+        for (int i = 0; i < activity.categories.length; i++) {
+            if (intent.getData().getSchemeSpecificPart().equals(activity.categories[i].name)) activity.start_tracking(i);
         }
     }
 }
