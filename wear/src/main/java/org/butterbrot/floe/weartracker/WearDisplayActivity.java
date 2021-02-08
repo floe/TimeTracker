@@ -12,6 +12,6 @@ public class WearDisplayActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.wear_activity_display);
-        mTextView = (TextView) findViewById(R.id.text);
+        mTextView = findViewById(R.id.text);
     }
 }
