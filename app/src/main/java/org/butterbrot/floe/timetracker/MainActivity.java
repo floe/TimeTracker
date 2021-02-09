@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     };
 
     // TODO: how about user-configurable categories? (with floating action button or so)
+    // TODO: for editing/sorting categories, RecyclerView is needed (see https://medium.com/@ipaulpro/drag-and-swipe-with-recyclerview-b9456d2b1aaf#.u7416aupw)
     // TODO: better logging, maybe also with separate logfile for category changes
 
     ItemViewAdapter iva;
