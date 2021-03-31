@@ -17,6 +17,7 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.Menu;
@@ -78,10 +79,10 @@ public class MainActivity extends AppCompatActivity {
 
         load_settings();
 
-        iva = new ItemViewAdapter(this, categories);
+        iva = new ItemViewAdapter(categories);
 
         // set content adapter for listview
-        ListView lv = findViewById(R.id.mainlist);
+        RecyclerView lv = findViewById(R.id.mainlist);
         lv.setAdapter(iva);
 
         notification_setup();

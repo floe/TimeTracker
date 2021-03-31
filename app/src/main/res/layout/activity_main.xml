@@ -22,8 +22,8 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <ListView
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+    <androidx.recyclerview.widget.RecyclerView
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:layout_width="match_parent"
         android:id="@+id/mainlist"
         tools:showIn="@layout/activity_main"
