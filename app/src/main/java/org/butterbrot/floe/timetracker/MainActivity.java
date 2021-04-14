@@ -17,6 +17,7 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
@@ -87,6 +88,22 @@ public class MainActivity extends AppCompatActivity {
 
         notification_setup();
         issue_notification();
+
+        ItemTouchHelper mIth = new ItemTouchHelper(
+            new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN,0) {
+                public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                    final int fromPos = viewHolder.getAdapterPosition();
+                    final int toPos = target.getAdapterPosition();
+                    // move item in `fromPos` to `toPos` in adapter.
+                    iva.onItemMove(fromPos,toPos);
+                    return true;// true if moved, false otherwise
+                }
+                public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                    // remove from adapter
+                }
+            }
+        );
+        mIth.attachToRecyclerView(lv);
     }
 
     // TODO: check if lifecycle handling is complete for load/save
